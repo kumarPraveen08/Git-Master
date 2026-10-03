@@ -1,122 +1,77 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { AppHeader } from "./components/AppHeader";
+import { Certificate } from "./components/Certificate";
+import { LessonPanel } from "./components/LessonPanel";
+import { Sidebar } from "./components/Sidebar";
+import { Terminal } from "./components/Terminal";
+import { useCourseProgress } from "./hooks/useCourseProgress";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const course = useCourseProgress();
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className="relative flex h-dvh overflow-hidden bg-[#0d1117] font-sans text-[#c9d1d9]">
+      {course.courseComplete && (
+        <Certificate
+          userName={course.userName}
+          onRestart={() => course.setCourseComplete(false)}
+        />
+      )}
+
+      {menuOpen && (
         <button
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+          className="fixed inset-0 z-30 bg-black/60 md:hidden"
+          aria-label="Close course menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
 
-      <div className="ticks"></div>
+      <Sidebar
+        open={menuOpen}
+        activeModuleIndex={course.activeModuleIndex}
+        activeLevelIndex={course.activeLevelIndex}
+        completedLevels={course.completedLevels}
+        expandedModules={course.expandedModules}
+        onToggleModule={course.toggleModuleExpand}
+        onJumpToLevel={course.jumpToLevel}
+        onReset={course.handleResetProgress}
+        onClose={() => setMenuOpen(false)}
+      />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <main className="flex h-dvh min-w-0 flex-1 flex-col">
+        <AppHeader
+          moduleTitle={course.activeModule.title}
+          levelTitle={course.activeLevel.title}
+          completedCount={course.completedLevels.size}
+          totalLevels={course.totalLevels}
+          onOpenMenu={() => setMenuOpen(true)}
+        />
+
+        <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+          <LessonPanel
+            level={course.activeLevel}
+            currentTaskIndex={course.currentTaskIndex}
+            showHint={course.showHint}
+            onToggleHint={() => course.setShowHint((open) => !open)}
+            onNextLevel={course.handleNextLevel}
+            hasNextLevel={course.hasNextLevel}
+          />
+          <section className="flex min-h-0 w-full flex-1 flex-col bg-[#010409] p-3 md:p-6 lg:h-full lg:w-[55%] lg:flex-none">
+            <div className="min-h-0 flex-1">
+              <Terminal
+                tasks={course.activeLevel.tasks}
+                currentTaskIndex={course.currentTaskIndex}
+                onTaskComplete={course.handleTaskComplete}
+                currentBranch={course.currentBranch}
+                setCurrentBranch={course.setCurrentBranch}
+                setUserName={course.setUserName}
+              />
+            </div>
+          </section>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </main>
+    </div>
+  );
 }
-
-export default App
