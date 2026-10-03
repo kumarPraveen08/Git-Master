@@ -173,7 +173,17 @@ export function useCourseProgress() {
     setCurrentTaskIndex(
       completedLevels.has(targetLvl.id) ? targetLvl.tasks.length : 0,
     );
-    setExpandedModules((current) => new Set(current).add(modIdx));
+    setExpandedModules((current) => {
+      const next = new Set(current);
+      const finishedModule =
+        modIdx !== activeModuleIndex &&
+        MODULES[activeModuleIndex].levels.every((level) =>
+          completedLevels.has(level.id),
+        );
+      if (finishedModule) next.delete(activeModuleIndex);
+      next.add(modIdx);
+      return next;
+    });
   };
 
   const handleNextLevel = () => {

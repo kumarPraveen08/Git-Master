@@ -12,25 +12,31 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v5
 
-      - name: Setup pnpm
-        uses: pnpm/setup@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
         with:
           version: 11
-          runtime: node@22
-          cache: true
-          require-lockfile: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run build
+        run: pnpm build
         env:
           VITE_BASE: /Git-Master/
 
@@ -41,7 +47,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
