@@ -1,35 +1,53 @@
-# React + TypeScript + Vite
+# Git Master
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Interactive Git and GitHub course. Each lesson explains a concept, then asks you to type the real command in a terminal. Progress stays in the browser, finished modules collapse in the sidebar, and the last lesson opens a certificate you can download.
 
-Currently, two official plugins are available:
+Live site: [kumarpraveen08.github.io/Git-Master](https://kumarpraveen08.github.io/Git-Master/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Lessons
 
-## React Compiler
+1. Git Setup & Configuration
+2. Repository Basics
+3. Staging & Commits
+4. Inspecting Changes & History
+5. Branching
+6. Merging & Conflicts
+7. Remote Repositories
+8. Undoing Changes
+9. Recovery with Reflog
+10. Stashing Work
+11. Rebase & Cherry-Pick
+12. Git Tags
+13. GitHub CLI Setup & Authentication
+14. GitHub Repository Management
+15. GitHub Pull Requests
+16. GitHub Issues
+17. GitHub Actions
+18. GitHub Secrets & Variables
+19. GitHub Releases
+20. GitHub Search
+21. GitHub API with gh
+22. Real-World Collaboration Workflow
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Run locally
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Requires Node.js 22 and pnpm 11.
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+pnpm install
+pnpm dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Other scripts:
+
+```bash
+pnpm build
+pnpm preview
+pnpm lint
+```
+
+## Deploy
+
+Pushes to `main` build the site and deploy it with GitHub Pages. In the repository, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+
+The production build uses `VITE_BASE=/Git-Master/` so assets load from the project site path. Local dev leaves the base as `/`.
